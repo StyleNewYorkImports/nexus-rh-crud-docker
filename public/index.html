@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sistema completo de gestão de funcionários">
+  <title>Nexus RH | Gestão de Funcionários</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="background-grid"></div>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand"><div class="brand-icon">N</div><div><strong>NEXUS</strong><span>RH SYSTEM</span></div></div>
+      <nav>
+        <button class="nav-item ativo"><span>▦</span> Visão geral</button>
+        <button class="nav-item" id="atalho-novo"><span>＋</span> Novo cadastro</button>
+        <button class="nav-item" id="atalho-equipe"><span>◎</span> Funcionários</button>
+      </nav>
+      <div class="tech-card"><span class="spark">◆</span><strong>Ambiente protegido</strong><p>Aplicação conectada ao PostgreSQL com serviços isolados em containers.</p><div class="tech-tags"><span>NODE</span><span>POSTGRES</span><span>DOCKER</span></div></div>
+      <div class="student-card"><div class="avatar">MS</div><div><strong>Matheus Soto</strong><span>Desenvolvimento de Sistemas</span></div></div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div><p class="eyebrow">PAINEL ADMINISTRATIVO</p><h1>Gestão de funcionários</h1><p class="welcome">Controle sua equipe de forma rápida, organizada e segura.</p></div>
+        <div class="top-actions"><div class="server-status" id="server-status"><i></i><span>Verificando sistema...</span></div><button class="icon-btn" id="theme-toggle" title="Alternar tema">☾</button><button class="primary-btn" id="novo-funcionario"><span>＋</span> Novo funcionário</button></div>
+      </header>
+
+      <section class="stats-grid">
+        <article class="stat-card blue"><div class="stat-icon">♟</div><div><span>Total da equipe</span><strong id="stat-total">0</strong><small>todos os cadastros</small></div><div class="mini-chart"><i></i><i></i><i></i><i></i><i></i></div></article>
+        <article class="stat-card green"><div class="stat-icon">✓</div><div><span>Funcionários ativos</span><strong id="stat-ativos">0</strong><small>em atividade</small></div><div class="pulse"></div></article>
+        <article class="stat-card purple"><div class="stat-icon">▣</div><div><span>CPFs validados</span><strong id="stat-validos">0</strong><small>dígitos verificadores</small></div><div class="progress-ring" id="stat-percentual">100%</div></article>
+        <article class="stat-card orange"><div class="stat-icon">⌁</div><div><span>Banco de dados</span><strong id="stat-banco">Online</strong><small>PostgreSQL conectado</small></div><div class="pulse"></div></article>
+      </section>
+
+      <section class="panel" id="painel-equipe">
+        <div class="panel-header">
+          <div><div class="title-row"><h2>Equipe cadastrada</h2><span class="count-badge" id="total">0</span></div><p>Visualize, filtre e gerencie os registros.</p></div>
+          <div class="filters">
+            <label class="search-box"><span>⌕</span><input id="busca" type="search" placeholder="Nome, CPF, cargo ou setor..."><kbd>Ctrl K</kbd></label>
+            <select id="filtro-status" aria-label="Filtrar por status"><option value="TODOS">Todos os status</option><option value="ATIVO">Ativos</option><option value="INATIVO">Inativos</option><option value="AFASTADO">Afastados</option></select>
+            <select id="ordenacao" aria-label="Ordenar funcionários"><option value="recentes">Mais recentes</option><option value="nome">Nome A–Z</option><option value="antigos">Mais antigos</option></select>
+            <button id="exportar" class="secondary-btn export-btn" title="Exportar CSV">⇩ CSV</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table><thead><tr><th>FUNCIONÁRIO</th><th>CARGO / SETOR</th><th>CPF</th><th>STATUS</th><th class="align-right">AÇÕES</th></tr></thead><tbody id="lista-funcionarios"></tbody></table>
+          <div id="loading" class="loading-state"><span class="loader"></span><p>Carregando funcionários...</p></div>
+          <div id="lista-vazia" class="empty-state escondido"><div class="empty-icon">⌕</div><h3>Nenhum funcionário encontrado</h3><p>Cadastre uma pessoa ou altere os filtros.</p></div>
+        </div>
+        <div class="panel-footer"><span id="resultado-texto">Mostrando 0 registros</span><span>Cadastro local protegido</span></div>
+      </section>
+      <footer><span>Nexus RH v3.0</span><span>CRUD • API REST • PostgreSQL • Docker</span></footer>
+    </main>
+  </div>
+
+  <div class="modal-overlay escondido" id="modal">
+    <section class="modal modal-wide" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-header"><div class="modal-title-wrap"><div class="modal-symbol">＋</div><div><p>GESTÃO DE EQUIPE</p><h2 id="modal-title">Novo funcionário</h2></div></div><button class="close-btn" id="fechar-modal">×</button></div>
+      <form id="form-funcionario">
+        <input type="hidden" id="funcionario-id">
+        <div class="form-grid">
+          <label class="campo-largo">Nome completo <span>*</span><div class="input-wrap"><i>♙</i><input id="nome" type="text" maxlength="100" placeholder="Ex.: João da Silva" required></div></label>
+          <label>CPF <span>*</span><div class="input-wrap"><i>▣</i><input id="cpf" type="text" maxlength="14" inputmode="numeric" placeholder="000.000.000-00" required></div><small id="cpf-feedback">A validação dos dígitos é automática</small></label>
+          <label>Cargo<div class="input-wrap"><i>♜</i><input id="cargo" type="text" maxlength="80" placeholder="Ex.: Desenvolvedor"></div></label>
+          <label>Setor<div class="input-wrap"><i>▦</i><input id="setor" type="text" maxlength="80" placeholder="Ex.: Tecnologia"></div></label>
+          <label>E-mail<div class="input-wrap"><i>＠</i><input id="email" type="email" maxlength="120" placeholder="nome@empresa.com"></div></label>
+          <label>Telefone<div class="input-wrap"><i>☎</i><input id="telefone" type="tel" maxlength="15" placeholder="(11) 99999-9999"></div></label>
+          <label>Data de admissão<div class="input-wrap"><i>◷</i><input id="data-admissao" type="date"></div></label>
+        </div>
+        <div class="info-box"><span>ⓘ</span><p>Novos funcionários entram como ativos. O responsável poderá alterar o status pelo painel. O CPF tem seus dígitos validados automaticamente.</p><a href="https://www.gov.br/pt-br/servicos/consultar-cadastro-de-pessoas-fisicas" target="_blank" rel="noopener">Consulta oficial ↗</a></div>
+        <div class="modal-actions"><button class="secondary-btn" type="button" id="btn-cancelar">Cancelar</button><button class="primary-btn save-btn" type="submit" id="btn-salvar"><span>✓</span> Cadastrar funcionário</button></div>
+      </form>
+    </section>
+  </div>
+  <div id="toast-container" class="toast-container"></div>
+  <script src="app.js"></script>
+</body>
+</html>
